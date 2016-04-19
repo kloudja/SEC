@@ -31,7 +31,7 @@ public class Client {
 	public int FSRead(String id, int pos, int size) throws ClassNotFoundException, IOException{
 		return library.FsRead(id, pos, size);
 	}
-	
+
 	public String getID() {
 		return myID;
 	}
