@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 
 import Message.FileCorruptMessage;
 import Message.Message;
+import Message.WriteMessage;
 
 public class ClientWriteThread extends Thread {
 
@@ -13,11 +14,19 @@ public class ClientWriteThread extends Thread {
 	private Socket_OOS_OIS soo;
 	private boolean check;
 	private Library lib;
+	private Dados dados;
 
 	public ClientWriteThread(Message message, Socket_OOS_OIS soo, Library lib) {
 		this.message = message;
 		this.soo = soo;
 		this.lib = lib;
+	}
+
+	public ClientWriteThread(WriteMessage message2, Socket_OOS_OIS socket_OOS_OIS, Library library, Dados dados) {
+		this.message = message2;
+		this.soo = socket_OOS_OIS;
+		this.lib = library;
+		this.dados = dados;
 	}
 
 	@Override
@@ -64,9 +73,11 @@ public class ClientWriteThread extends Thread {
 			}
 
 		}
-		System.out.println("Mandeu um boolean");
-		lib.setCheckCorrupt(check);
-		System.out.println("Mandeu um boolean2222");
+		dados.setCheckCorrupt(check);
+	}
+
+	public void ola() {
+		System.out.println("olá");
 	}
 
 }

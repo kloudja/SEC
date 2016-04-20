@@ -37,23 +37,7 @@ public class Library {
 	private MessageDigest messageDigest;
 	private ArrayList<ContentHashBlock> contentHashBlocks = new ArrayList<>();
 	private ArrayList<Socket_OOS_OIS> sockets = new ArrayList<>();
-	private ArrayList<Boolean> checkCorrupt = new ArrayList<>();
-
-	//Algoritmo
-	private int wts = 0;
-	private ArrayList<FileCorruptMessage> acklist = new ArrayList<>();
-	private int rid = 0;
-	private ArrayList<Message> readlist = new ArrayList<>();
-	//Algoritmo
-
-	public ArrayList<Boolean> getCheckCorrupt() {
-		return checkCorrupt;
-	}
-
-	public synchronized void setCheckCorrupt(Boolean b) {
-		System.out.println("Vou meter um boolean");
-		checkCorrupt.add(b);
-	}
+	private Dados dados = new Dados();
 
 	public Library() throws UnknownHostException, IOException, InterruptedException {
 
@@ -88,10 +72,6 @@ public class Library {
 		//		objectOutputStream.flush();
 		//		objectOutputStream.reset();
 
-
-
-
-
 		return id;
 	}
 
@@ -99,10 +79,9 @@ public class Library {
 	BadPaddingException, ClassNotFoundException {
 
 		//Algoritmo
-		wts += 1;
-		acklist.clear();
-
-
+		int wts = dados.getWts();
+		dados.setWts(wts += 1);
+		dados.getAcklist().clear();
 		//Algoritmo
 
 		byte[] actualContent = content;
@@ -169,8 +148,6 @@ public class Library {
 		//Algoritmo
 		byte[] wtsAssinado = signContent(BigInteger.valueOf(wts).toByteArray());
 
-
-
 		ArrayList<String> arrayOfHashIds = generateArrayOfHashIds();//OK
 
 		byte[] signatureOfArrayIds = signContent(convertArrayListInBytes(arrayOfHashIds));
@@ -180,12 +157,9 @@ public class Library {
 		WriteMessage message = new WriteMessage(contentHashBlocks, arrayOfHashIds, signatureOfArrayIds,
 				keyPair.getPublic(),wtsAssinado);
 		
-		System.out.println("masdggg");
 		
 		for(int i = 0; i < Server.NMR_SERVERS; i++){
-			System.out.println("vai criar as threads");
-			new ClientWriteThread(message, sockets.get(i), this).start();
-			System.out.println("criou as threads");
+			new ClientWriteThread(message, sockets.get(i), this, dados).start();
 
 		}
 
@@ -193,24 +167,24 @@ public class Library {
 		//		objectOutputStream.flush();
 		//		objectOutputStream.reset();
 
-		System.out.println("Tamanho do checkCorrupt" + checkCorrupt.size());
-		while(checkCorrupt.size()<Server.NMR_SERVERS){
-			
-			
-			/*try {
+		while(dados.getCheckCorrupt().size()<Server.NMR_SERVERS){
+			System.out.print("");
+
+			/*
+			try {
 				System.out.println("Vou esperar");
-				this.wait();
+				wait();
 			} catch (InterruptedException e) {
 				System.out.println("catchs");
 			}
 			System.out.println("recebi uma resposta");*/
 
-		}
+		}		
 		//TODO
 		int certos=0;
 		int errados=0;
-		for(int i = 0; i < checkCorrupt.size(); i++){
-			if(checkCorrupt.get(i)==true){
+		for(int i = 0; i < dados.getCheckCorrupt().size(); i++){
+			if(dados.getCheckCorrupt().get(i)==true){
 				certos++;
 			}
 			else{
