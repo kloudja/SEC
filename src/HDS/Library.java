@@ -169,7 +169,6 @@ public class Library {
 
 		while(dados.getCheckCorrupt().size()<Server.NMR_SERVERS){
 			System.out.print("");
-
 			/*
 			try {
 				System.out.println("Vou esperar");
