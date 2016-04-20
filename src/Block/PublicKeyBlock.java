@@ -8,6 +8,7 @@ public class PublicKeyBlock extends Block{
 	private PublicKey publicKey;
 	private ArrayList<String> contentHashBlockId = new ArrayList();
 	private byte[] signature;
+	private int wts;
 
 	public PublicKeyBlock (String id, PublicKey publicKey) {
 		super(id);
@@ -37,7 +38,20 @@ public class PublicKeyBlock extends Block{
 	public void setPublicKey(PublicKey publicKey) {
 		this.publicKey = publicKey;
 	}
-	
-	
-	
+
+	public ArrayList<String> getContentHashBlockId() {
+		return contentHashBlockId;
+	}
+
+	public void setContentHashBlockId(ArrayList<String> contentHashBlockId) {
+		this.contentHashBlockId = contentHashBlockId;
+	}
+
+	public int getWts() {
+		return wts;
+	}
+
+	public void setWts(int wts) {
+		this.wts = wts;
+	}
 }

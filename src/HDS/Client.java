@@ -5,16 +5,21 @@ import java.io.InputStreamReader;
 import java.net.UnknownHostException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import Message.FileCorruptMessage;
+import Message.Message;
+
 public class Client {
 
 	private Library library;
 	private String myID;
+
 
 	public Client() throws UnknownHostException, IOException, InterruptedException{
 		library = new Library();

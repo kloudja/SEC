@@ -87,5 +87,14 @@ public class Server {
 		
 	}
 
+
+	public void put_k(ArrayList<String> arrayOfHashIds, byte[] signatureOfArrayIds, PublicKey publicKey,
+			int wtsRecebido) {
+		PublicKeyBlock pubBlock = publicKeyBlockId_block.get(printHexBinary(generateHash(publicKey.toString().getBytes())));
+		pubBlock.setContentFiles(arrayOfHashIds);
+		pubBlock.setSignature(signatureOfArrayIds);	
+		pubBlock.setWts(wtsRecebido);
+	}
+
 	
 }

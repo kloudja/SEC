@@ -63,10 +63,10 @@ public class ClientWriteThread extends Thread {
 				check = false;
 			}
 
-			lib.setCheckCorrupt(check);
-			notifyAll();
 		}
-
+		System.out.println("Mandeu um boolean");
+		lib.setCheckCorrupt(check);
+		System.out.println("Mandeu um boolean2222");
 	}
 
 }

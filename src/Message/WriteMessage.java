@@ -12,6 +12,7 @@ public class WriteMessage extends Message {
 	private PublicKey publicKey;
 	private byte[] signatureOfArrayIds;
 	private ArrayList<String> arrayOfHashIds; 
+	private byte[] wts;
 	
 	public WriteMessage(ArrayList<ContentHashBlock> blocks, ArrayList<String> arrayOfHashIds, byte[] signature, PublicKey publicKey){
 		this.blocks = blocks;
@@ -21,6 +22,16 @@ public class WriteMessage extends Message {
 	}
 	
 	
+	public WriteMessage(ArrayList<ContentHashBlock> contentHashBlocks, ArrayList<String> arrayOfHashIds2,
+			byte[] signatureOfArrayIds2, PublicKey public1, byte[] wtsAssinado) {
+		this.blocks = contentHashBlocks;
+		this.arrayOfHashIds = arrayOfHashIds2;
+		this.signatureOfArrayIds = signatureOfArrayIds2;
+		this.publicKey = public1;
+		this.wts = wtsAssinado;
+		}
+
+
 	public ArrayList<ContentHashBlock> getBlocks() {
 		return blocks;
 	}
@@ -59,4 +70,16 @@ public class WriteMessage extends Message {
 	public PublicKey getPublicKey() {
 		return publicKey;
 	}
+
+
+	public byte[] getWts() {
+		return wts;
+	}
+
+
+	public void setWts(byte[] wts) {
+		this.wts = wts;
+	}
+	
+	
 }

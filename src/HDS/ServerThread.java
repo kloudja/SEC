@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.Socket;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -70,7 +71,30 @@ public class ServerThread extends Thread {
 					System.out.println("recebi uma msg");
 					byte[] originalHash = decipherSignature(writeMessage.getSignatureOfArrayIds(), writeMessage.getPublicKey());
 					byte[] newHash = generateHash(convertArrayListInBytes(writeMessage.getArrayOfHashIds()));
-
+					
+					//Algoritmo-------------------------------------------------------
+					byte[] originalwts = decipherSignature(writeMessage.getWts(), writeMessage.getPublicKey()); 
+					PublicKeyBlock block =
+							blockServer.getPublicKeyBlockById(printHexBinary
+									(generateHash(writeMessage.getPublicKey().toString().getBytes())));
+					int wtsRecebido = new BigInteger(originalwts).intValue();
+					int wtsAntigo = block.getWts();
+					
+					if(wtsRecebido > wtsAntigo){
+						
+						System.out.println("Wts está bacano. Vou escrever no server");
+						writeBlocksToServer(
+								writeMessage.getBlocks(),
+								writeMessage.getArrayOfHashIds(),
+								writeMessage.getSignatureOfArrayIds(),
+								writeMessage.getPublicKey(),
+								wtsRecebido
+								);
+					
+					}
+					//Algoritmo---------------------------------------------------------------
+					
+					
 					//Check the integrity of the ArrayList that contains only the Id's of the HashBlocks
 					//In case of failing the integrity it will send a corrupt File Message with true [arrayList<String>]
 					if(!Arrays.equals(originalHash, newHash)){
@@ -101,7 +125,7 @@ public class ServerThread extends Thread {
 							System.out.println("enviei msg");
 							objectOutputStream.flush();
 							objectOutputStream.reset();
-							writeBlocksToServer(writeMessage.getBlocks(), writeMessage.getArrayOfHashIds(), writeMessage.getSignatureOfArrayIds(), writeMessage.getPublicKey());
+							//writeBlocksToServer(writeMessage.getBlocks(), writeMessage.getArrayOfHashIds(), writeMessage.getSignatureOfArrayIds(), writeMessage.getPublicKey());
 
 						}
 					}
@@ -164,6 +188,7 @@ public class ServerThread extends Thread {
 			e.printStackTrace();
 		}
 	}
+	
 	private byte[] processContent(int pos, int size, PublicKeyBlock publicKeyBlock2) throws IOException {
 		
 		byte[] contentFinal = new byte[0];
@@ -277,6 +302,18 @@ public class ServerThread extends Thread {
 		blockServer.put_k(idHashBlocks, signature, publicKey);
 	}
 
+	private void writeBlocksToServer(ArrayList<ContentHashBlock> blocks, ArrayList<String> arrayOfHashIds,
+			byte[] signatureOfArrayIds, PublicKey publicKey, int wtsRecebido) {
+
+		for(int i = 0; i < blocks.size(); i++){
+			blockServer.put_h(blocks.get(i));
+		}
+		//blockServer.getPublicKeyBlock(myId);
+		blockServer.put_k(arrayOfHashIds, signatureOfArrayIds, publicKey, wtsRecebido);
+		
+	}
+	
+	
 	private byte[] generateHash(byte[] b) {
 		messageDigest.update(b);
 		return messageDigest.digest();
@@ -321,6 +358,4 @@ public class ServerThread extends Thread {
 	public boolean checkBlockIntegrity(ContentHashBlock block){
 		return block.getId().equals(printHexBinary(generateHash(block.getContent())));
 	}
-	
-
 }
